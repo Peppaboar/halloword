@@ -1,4 +1,4 @@
-创建pixi应用和舞台
+﻿11创建pixi应用和舞台
  1,这里是你需要创建一个名叫app的Pixi应用对象和一个舞台的必要的代码。这些代码需要在你的HTML文档中以<script>标签包裹。
         let app = new PIXI.Application({width: 256, height: 256});
         document.body.appendChild(app.view)
