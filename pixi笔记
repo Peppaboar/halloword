@@ -1,0 +1,435 @@
+创建pixi应用和舞台
+ 1,这里是你需要创建一个名叫app的Pixi应用对象和一个舞台的必要的代码。这些代码需要在你的HTML文档中以<script>标签包裹。
+        let app = new PIXI.Application({width: 256, height: 256});
+        document.body.appendChild(app.view)
+        let app = new PIXI.Application({
+            width: 256,         // default: 800
+            height: 256,        // default: 600
+            antialias: true,    // default: false  字体的边界和几何图形更加圆滑
+            transparent: false, // default: false 将整个Canvas标签的透明度进行了设置
+            resolution: 1,       // default: 1    让Pixi在不同的分辨率和像素密度的平台上运行变得简单
+            forceCanvas: true,   Pixi的画布对象将会默认选择WebGL引擎渲染模式，它更快并且可以让你使用一些壮观的视觉特效————如果你把他们都学了。但是如果你需要强制使用Canvas引擎绘制而抛弃WebGL，你可以设置forceCanvas选项为true
+          }
+        );
+2,如果你需要在你创建canvas标签之后改变它的背景色 app.renderer.backgroundColor = 0x061639;
+3,如果你想要去找到画布的宽高，使用app.renderer.view.width 和app.renderer.view.height。
+    app.renderer.autoResize = true;
+    app.renderer.resize(512, 512);
+4,
+    如果你想让canvas占据整个窗口，你可以将这些CSS代码放在文档中，并且刷新你浏览器窗口的大小。
+
+    app.renderer.view.style.position = "absolute";
+    app.renderer.view.style.display = "block";
+    app.renderer.autoResize = true;
+    app.renderer.resize(window.innerWidth, window.innerHeight);
+    但是，如果你这么做了，要记得把padding和margin都设置成0：
+5,加载图像并将它转化成纹理？
+    PIXI.loader
+      .add("images/anyImage.png")
+      .load(setup);
+    function setup() {
+      //This code will run when the loader has finished loading the image
+    }
+这里是一个完整的加载图像的代码。调用setup方法，并未加载的图像创建一个精灵
+    PIXI.loader
+      .add("images/anyImage.png")
+      .load(setup);
+
+    function setup() {
+      let sprite = new PIXI.Sprite(
+        PIXI.loader.resources["images/anyImage.png"].texture
+      );
+    }
+你可以链式调用add方法来加载一系列图像，像下面这样
+    PIXI.loader
+      .add("images/imageOne.png")
+      .add("images/imageTwo.png")
+      .add("images/imageThree.png")
+      .load(setup);
+更好的方式则是用数组给一个add方法传参， 也允许你使用JSON文件
+PIXI.loader
+  .add([
+    "images/imageOne.png",
+    "images/imageTwo.png",
+    "images/imageThree.png"
+  ])
+  .load(setup);
+这是一个完整的
+    let app = new PIXI.Application({
+        width: 256,
+        height: 256,
+        antialias: true,
+        transparent: false,
+        resolution: 1
+      }
+    );
+
+    //Add the canvas that Pixi automatically created for you to the HTML document
+    document.body.appendChild(app.view);
+
+    //load an image and run the `setup` function when it's done
+    PIXI.loader
+      .add("images/cat.png")
+      .load(setup);
+
+    //This `setup` function will run when the image has loaded
+    function setup() {
+
+      //Create the cat sprite
+      let cat = new PIXI.Sprite(PIXI.loader.resources["images/cat.png"].texture);
+
+      //Add the cat to the stage
+      app.stage.addChild(cat);
+    }
+如果你想把一个精灵从舞台上挪走，就可以使用removeChild方法：
+    app.stage.removeChild(anySprite)
+但是通常，我们都把精灵的visible属性设置成false来让精灵简单的隐藏。
+    anySprite.visible = false;
+你可以对你使用频繁的Pixi对象和方法设置一些简略的可读性更强的别名
+let TextureCache = PIXI.utils.TextureCache
+
+如果你想改变已经显示的精灵的纹理，使用texture属性，可以设置任何Texture对象，像下面这样：
+
+anySprite.texture = PIXI.utils.TextureCache["anyTexture.png"];
+
+使用别名
+    let TextureCache = PIXI.utils.TextureCache
+    现在就可以像这样使用别名了：
+    let texture = TextureCache["images/cat.png"];
+
+监视加载进程
+    Pixi的加载器有一个特殊的progress事件，它将会调用一个可以定制的函数，这个函数将在每次文件加载时调用。progress事件将会被loader的on方法调用
+    你现在可以使用 resource.url变量来找到现在已经被加载的文件。（如果你想找到你定义的别名，使用resource.name参数。）你可以使用loader.progress来找到现在有百分之多少的文件被加载了，这里有一些关于上面描述的代码：
+    PIXI.loader
+      .add([
+        "images/one.png",
+        "images/two.png",
+        "images/three.png"
+      ])
+      .on("progress", loadProgressHandler)
+      .load(setup);
+
+    function loadProgressHandler(loader, resource) {
+     console.log("loading: " + resource.url);//加载的文件名
+      console.log("progress: " + loader.progress + "%");//加载的百分比
+    }
+
+    function setup() {
+      console.log("All files loaded");
+    }
+     （注意：还有一些额外的resource对象属性， resource.error会告诉你有哪些加载时候的错误，resource.data将会给你文件的原始二进制数据。）
+一些关于Pixi的加载器的其他知识
+    add 方法有四个基础参数:
+        add(name, url, optionObject, callbackFunction)
+        name (string): 加载源文件的别名,如果没设置，url就会被放在这.
+        url (string): 源文件的地址，是加载器 baseUrl的相对地址.
+        options (object literal): 加载设置.
+        options.crossOrigin (Boolean): 源文件请求跨域不？默认是自动设定的。
+        options.loadType: 源文件是怎么加载进来的？默认是Resource.LOAD_TYPE.XHR。 options.xhrType: 用XHR的时候该怎么处理数据？ 默认是Resource.XHR_RESPONSE_TYPE.DEFAULT。
+        callbackFunction: 当这个特定的函数加载完，这个特定的函数将会被执行。
+        这里有点用了add方法加载文件的例子：
+            .add('key', 'http://...', function () {})
+            .add('http://...', function () {})
+            .add('http://...')
+        这些就是所谓“对象语法”啦：
+            .add({
+              name: 'key2',
+              url: 'http://...'
+            }, function () {})
+
+            .add({
+              url: 'http://...'
+            }, function () {})
+
+            .add({
+              name: 'key3',
+              url: 'http://...'
+              onComplete: function () {}
+            })
+     你也可以给add方法传一个对象的数组，或者既使用对象数组，又使用链式加载：
+        .add([
+          {name: 'key4', url: 'http://...', onComplete: function () {} },
+          {url: 'http://...', onComplete: function () {} },
+          'http://...'
+        ]);
+    如果你需要重新加载一批文件，调用加载器的reset方法：PIXI.loader.reset()
+
+    精灵位置
+        function setup() {
+          let cat = new Sprite(resources["images/cat.png"].texture);
+          cat.x = 96;
+          cat.y = 96;
+          app.stage.addChild(cat);
+        }
+        这两行代码将把猫往右移动96像素，往下移动96像素。
+        表示了它的x 和 y 坐标点
+        你可以一句话设置精灵的x和y:
+        cat.position.set(x, y)
+    Scale的值是从0到1之间的数字的时候，代表了它对于原来精灵大小的百分比。1意味着100%（原来的大小），所以0.5意味着50%（一半大小）。你可以把这个值改为2，这就意味着让精灵的大小成倍增长
+        cat.scale.x = 2;
+            cat.scale.y = 2;
+    旋转
+        cat.rotation = 0.5;
+        精灵的左上角代表它的位置，这个点被称之为 锚点 。如果你用像0.5这种值设定rotation，这个旋转将会 围绕着锚点发生
+       anchor.x和anchor.y的值如果是从0到1，就会被认为是整个纹理的长度或宽度百分比。设置他们都为0.5，锚点就处在了图像中心。精灵定位的依据点不会改变，锚点的改变是另外一回事。
+        像是position和scale属性一样，你也可以在一行内像这样设置锚点的位置：
+        cat.anchor.set(x, y)
+            cat.pivot.set(32, 32)
+        它将绕着它的中心点旋转。但是记住：你如果改变了精灵的pivot属性，你也就改变了它的原点位置。
+     所以anchor 和 pivot的不同之处在哪里呢？他们真的很像！anchor改变了精灵纹理的图像原点，用0到1的数据来填充。pivot则改变了精灵的原点，用像素的值来填充。你要用哪个取决于你。
+**********************************************
+加载纹理贴图集
+    加载纹理贴图集
+    可以使用Pixi的loader来加载纹理贴图集。如果是用Texture Packer生成的JSON，loader会自动读取数据，并对每一个帧创建纹理。下面就是怎么用loader来加载treasureHunter.json。当它成功加载，setup方法将会执行。
+
+    loader
+      .add("images/treasureHunter.json")
+      .load(setup);
+    现在每一个图像的帧都被加载进Pixi的纹理缓存之中了。你可以使用Texture Packer中定义的他们的名字来取用每一个纹理。
+
+从已经加载的纹理贴图集中创建精灵
+    使用 TextureCache:
+    let texture = TextureCache["frameId.png"],
+        sprite = new Sprite(texture);
+    如果你是使用的 loader来加载纹理贴图集, 使用loader的 resources:
+    let sprite = new Sprite(
+      resources["images/treasureHunter.json"].textures["frameId.png"]
+    );
+    要创建一个精灵需要输入太多东西了! 所以我建议你给纹理贴图集的textures对象创建一个叫做id的别名，象是这样：
+    let id = PIXI.loader.resources["images/treasureHunter.json"].textures;
+    现在你就可以像这样实例化一个精灵了：
+
+    let sprite = new Sprite(id["frameId.png"]);
+移动精灵
+    使用Pixi的ticker。这被称为 游戏循环 。任何在游戏循环里的代码都会1秒更新60次。你可以用下面的代码让 cat 精灵以每帧1像素的速率移动
+    function setup() {
+      app.ticker.add(delta => gameLoop(delta));
+    }
+
+    function gameLoop(delta){
+      cat.x += 1;
+    }
+    每一个你放进Pixi的ticker的函数都会每秒被执行60次。你可以看见函数里面提供了一个delta的内容，他是什么呢？
+    delta的值代表帧的部分的延迟。
+你也没必要非得用Pixi的ticker来创建游戏循环。如果你喜欢，也可以用requestAnimationFrame像这样创建：
+    你也没必要非得用Pixi的ticker来创建游戏循环。如果你喜欢，也可以用requestAnimationFrame像这样创建：
+
+    function gameLoop() {
+      requestAnimationFrame(gameLoop);
+      cat.x += 1;
+    }
+    gameLoop();
+使用速度属性
+     速度属性 ：vx和 vy去控制精灵的运动速度。 vx被用来设置精灵在x轴（水平）的速度和方向。vy被用来设置精灵在y轴（垂直）的速度和方向
+    function setup() {
+      cat = new Sprite(resources["images/cat.png"].texture);
+      cat.y = 96;
+      cat.vx = 0;
+      cat.vy = 0;
+      app.stage.addChild(cat);
+      app.ticker.add(delta => gameLoop(delta));
+    }
+    function gameLoop(delta){
+      cat.vx = 1;
+      cat.vy = 1;
+
+      cat.x += cat.vx;
+      cat.y += cat.vy;
+    }
+给精灵分组
+    分组让你能够让你创建游戏场景，并且像一个单一单元那样管理相似的精灵图。Pixi有一个对象叫 Container
+    //The cat
+    let cat = new Sprite(id["cat.png"]);
+    cat.position.set(16, 16);
+
+    //The hedgehog
+    let hedgehog = new Sprite(id["hedgehog.png"]);
+    hedgehog.position.set(32, 32);
+
+    //The tiger
+    let tiger = new Sprite(id["tiger.png"]);
+    tiger.position.set(64, 64);
+    让后创建一个animals容器像这样去把他们聚合在一起：
+
+    let animals = new Container();
+    然后用 addChild 去把精灵图 添加到分组中 。
+
+    animals.addChild(cat);
+    animals.addChild(hedgehog);
+    animals.addChild(tiger);
+    最后把分组添加到舞台上。
+
+    app.stage.addChild(animals);
+    （你知道的，stage对象也是一个Container。它是所有Pixi精灵的根容器。）
+
+    不过你现在可以像对待一个单一单元一样对待animals分组。你可以把Container当作是一个特殊类型的不包含任何纹理的精灵。
+
+    如果你需要获取animals包含的所有子精灵，你可以用它的children数组获取。
+
+    console.log(animals.children)
+    //Displays: Array [Object, Object, Object]
+        因为animals分组跟其他精灵一样，你可以改变它的x和y的值，alpha, scale和其他精灵的属性。所有你改变了的父容器的属性值，都会改变它的子精灵的相应属性。所以如果你设置分组的x和y的位置，所有的子精灵都会相对于分组的左上角重新定位。
+
+        animals.position.set(64, 64);
+    animals分组也有它自己的尺寸，它是以包含的精灵所占的区域计算出来的
+        console.log(animals.width);
+
+        console.log(animals.height);
+    如果你改变了分组的宽和高 所有的孩子精灵都会缩放到刚才你设定的那个值。
+
+    当你往一个Container添加一个精灵时，它的x和y的位置是 相对于分组的左上角 的。这是精灵的局部位置，
+        console.log(cat.x);
+        //Displays: 16
+    精灵图还有 全局位置 。全局位置是舞台左上角到精灵锚点（通常是精灵的左上角）的距离
+        这意味着你能在animals分组里找到猫的全局位置：
+        console.log(animals.toGlobal(cat.position));
+    如果你想知道一个精灵的全局位置，但是不知道精灵的父容器怎么办？
+        cat.parent.toGlobal(cat.position);
+    这还有一种方式能够计算出全局位置！而且，它实际上最好的方式
+        tiger.getGlobalPosition().x
+        tiger.getGlobalPosition().y   getGlobalPosition是高精度的：当精灵的局部位置改变的同时，它会返回给你精确的全局位置
+    用 toLocal 找到一个精灵和其他任何一个精灵之间的距离。
+        tiger.toLocal(tiger.position, hedgehog).x
+        tiger.toLocal(tiger.position, hedgehog).y
+
+使用 ParticleContainer 分组精灵
+    Pixi有一个额外的，高性能的方式去分组精灵的方法称作：ParticleContainer（PIXI.ParticleContainer）。
+    任何在ParticleContainer 里的精灵都会比在一个普通的Container的渲染速度快2到5倍。这是用于提升游戏性能的一个很棒的方法。
+        let superFastSprites = new PIXI.particles.ParticleContainer();
+         然后用 addChild 去往里添加精灵，就像往普通的 Container添加一样。
+
+         如果你决定用ParticleContainer你必须做出一些妥协。
+         在 ParticleContainer 里的精灵图只有一小部分基本属性：x, y, width, height, scale, pivot, alpha, visible - 就这么多。
+         而且，它包含的精灵不能再继续嵌套自己的孩子精灵。 ParticleContainer 也不能用Pixi的先进的视觉效果像过滤器和混合模式。
+         每个 ParticleContainer 只能用一个纹理（所以如果你想让精灵有不同的表现方式你将不得不更换雪碧图）。但是为了得到巨大的性能提升，这些妥协通常是值得的
+         。你可以在同一个项目中同时用 Container 和 ParticleContainer，然后微调一下你自己的优化。
+            为什么在 Particle Container 的精灵图这么快呢？因为精灵的位置是直接在GPU上计算的
+            当你创建一个 ParticleContainer，有四个参数可以传递， size, properties, batchSize 和 autoResize
+                let superFastSprites = new ParticleContainer(maxSize, properties, batchSize, autoResize);
+
+            默认的maxSize是 1,500。所以，如果你需要包裹更多的精灵，把它设置为更高的数字。配置参数是一个拥有五个布尔值的对象：scale, position, rotation, uvs 和 alpha。
+            默认的值是 position 为 true，其他都为 false。这意味着如果你想在 ParticleContainer 改变精灵的rotation, scale, alpha, 或者 uvs，你得先把这些属性设置为 true，像这样：
+                let superFastSprites = new ParticleContainer(
+                  size,
+                  {
+                    rotation: true,
+                    alphaAndtint: true,
+                    scale: true,
+                    uvs: true
+                  }
+                );
+              uvs 是什么呢？只有当它们在动画时需要改变它们纹理子图像的时候你需要设置它为 true 。（想让它工作，所有的精灵纹理需要在同一张雪碧图上。）
+用Pixi绘制几何图形
+    不同于Canvas的绘画api，你使用Pixi绘制的图形是通过WebGL在GPU上渲染的
+    矩形
+        所有的形状的初始化都是先创造一个Pixi的Graphics的类 (PIXI.Graphics)的实例。
+
+        let rectangle = new Graphics();
+        调用beginFill和一个16进制的颜色值来设置矩形的填充颜色。下面展示如何设置颜色为淡蓝色。
+
+        rectangle.beginFill(0x66CCFF);
+        如果你想要给图形设置一个轮廓，使用lineStyle方法。下面展示如何给矩形设置一个4像素宽alpha值为1的红色轮廓
+
+        rectangle.lineStyle(4, 0xFF3300, 1);
+        调用drawRect方法来画一个矩形。它的四个参数是x, y, width 和 height。
+
+        rectangle.drawRect(x, y, width, height);
+        调用endFill结束绘制。
+
+        rectangle.endFill();
+        app.stage.addChild(rectangle);
+    圆形
+        不同于矩形和精灵，一个圆形的x和y坐标也是它自身的圆点。下面展示如何创造半径32像素的紫色圆形。
+
+        let circle = new Graphics();
+        circle.beginFill(0x9966FF);
+        circle.drawCircle(0, 0, 32);//半径32
+        circle.endFill();
+        circle.x = 64;
+        circle.y = 130;
+        app.stage.addChild(circle);
+    椭圆
+        drawEllipse是一个卓越的Canvas绘画api，Pixi也能够让你调用drawEllipse来绘制椭圆。
+
+        drawEllipse(x, y, width, height);
+        x/y坐标位置决定了椭圆的左上角（想象椭圆被一个不可见的矩形边界盒包围着-盒的左上角代表了椭圆x/y的锚点位置）。下面是50像素宽20像素高的黄色椭圆。
+
+        let ellipse = new Graphics();
+        ellipse.beginFill(0xFFFF00);
+        ellipse.drawEllipse(0, 0, 50, 20);
+        ellipse.endFill();
+        ellipse.x = 180;
+        ellipse.y = 130;
+        app.stage.addChild(ellipse);
+    圆角矩形
+        圆角矩形
+        Pixi同样允许你调用drawRoundedRect方法来创建圆角矩形。这个方法的最后一个参数cornerRadius是单位为像素的数字，它代表矩形的圆角应该有多圆。
+
+        drawRoundedRect(x, y, width, height, cornerRadius)
+        下面展示如何创建一个圆角半径为10的圆角矩形。
+
+        let roundBox = new Graphics();
+        roundBox.lineStyle(4, 0x99CCFF, 1);
+        roundBox.beginFill(0xFF9933);
+        roundBox.drawRoundedRect(0, 0, 84, 36, 10)
+        roundBox.endFill();
+        roundBox.x = 48;
+        roundBox.y = 190;
+        app.stage.addChild(roundBox);
+    线段
+        想必你已经看过上面定义线段的lineStyle方法了。你可以调用moveTo 和 lineTo方法来画线段的起点和终点，就和Canvas绘画api中的一样。下面展示如何绘制一条4像素宽的白色对角线。
+        let line = new Graphics();
+        line.lineStyle(4, 0xFFFFFF, 1);
+        line.moveTo(0, 0);
+        line.lineTo(80, 50);
+        line.x = 32;
+        line.y = 32;
+        app.stage.addChild(line);
+    多边形
+        drawPolygon会将上面三个点连接起来创造图形。下面是如何使用drawPolygon来连接三条线从而创建一个红底蓝边的三角形。我们将三角形绘制在（0，0）的位置上，之后通过调整它的x 和 y属性来移动它在舞台上的位置。
+
+        let triangle = new PIXI.Graphics();
+        triangle.beginFill(0x66FF33);
+        triangle.drawPolygon([
+            -32, 64,             //First point
+            32, 64,              //Second point
+            0, 0                 //Third point
+        ]);
+
+        triangle.endFill();
+        triangle.x = 180;
+        triangle.y = 22;
+
+        app.stage.addChild(triangle);
+显示文本
+     let style = new PIXI.TextStyle({
+            fontFamily: "Arial",
+            fontSize: 36,
+            fill: "white",
+            stroke: '#ff3300',
+            strokeThickness: 4,
+            dropShadow: true,
+            dropShadowColor: "#000000",
+            dropShadowBlur: 4,
+            dropShadowAngle: Math.PI / 6,
+            dropShadowDistance: 6,
+        });
+        let message = new PIXI.Text("Hello Pixi!",style);
+        app.stage.addChild(message);
+        message.position.set(54, 96);
+            message.text='hello word'
+        如果你想要在你创建文本对象之后改变它的内容，使用text属性。
+
+        message.text = "Text changed!";
+        如果你想要重新定义样式属性，使用style属性。
+
+        message.style = {fill: "black", font: "16px PetMe64"};
+         Pixi也能包裹文本的长段。设置文本的 wordWrap 样式属性到 true，然后设置wordWrapWidth到一行文字应该到的最大像素。调用align属性来设置多行文本的对齐方式。
+        （注意：align 不会影响单行文本。）
+        如果你想要使用自定义的字体文件，使用CSS的@font-face规则来链接字体文件到Pixi应用运行的HTML页面。
+        @font-face {
+          font-family: "fontFamilyName";
+          src: url("fonts/fontFile.ttf");
+        }
+碰撞检测
+    你可以用一个叫做：hitTestRectangle 的自定义的函数来检测两个矩形精灵是否接触。

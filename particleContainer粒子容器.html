@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="js/pixi.min.js"></script>
+    <style>
+        *{
+            margin: 0;
+            padding: 0;
+        }
+    </style>
+</head>
+<body>
+<script>
+    let Application=PIXI.Application,
+        loader=PIXI.loader,
+        resources=loader.resources,
+        Sprite=PIXI.Sprite,
+        TextureCache=PIXI.utils.TextureCache;
+
+    let app=new Application({
+        width:500,
+        height:500,
+        antialias: true,
+        transparent:false,
+        resolution:1
+    });
+    document.body.appendChild(app.view);
+    loader
+        .add('image/1.jpg')
+        .add('image/2.jpg')
+        .add('image/3.jpg')
+        .add('image/4.jpg')
+        .load(setup);
+    function setup() {
+        let one = new Sprite(
+            resources['image/1.jpg'].texture
+        );
+        one.position.set(20,20)
+        one.width=100;
+        one.height=100;
+        let two = new Sprite(
+            resources['image/2.jpg'].texture
+        );
+        two.width=100;
+        two.height=100;
+        two.position.set(100,100);
+        let three = new Sprite(
+            resources['image/3.jpg'].texture
+        );
+        three.width=100;
+        three.height=100;
+        three.position.set(180,180);
+        let superFastSprites=new PIXI.particles.ParticleContainer()
+            superFastSprites.addChild(one);
+            superFastSprites.addChild(two);
+            superFastSprites.addChild(three);
+            app.stage.addChild(superFastSprites)
+
+    }
+
+
+</script>
+</body>
+</html>

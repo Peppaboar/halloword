@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="js/pixi.min.js"></script>
+</head>
+<body>
+<script>
+    let Application=PIXI.Application,
+        loader=PIXI.loader,
+        resources=loader.resources,
+        Sprite=PIXI.Sprite,
+        TextureCache=PIXI.utils.TextureCache;
+    let app=new Application({
+        width:400,
+        height:400,
+        antialias: true,
+        transparent:false,
+        resolution:1
+    });
+    document.body.appendChild(app.view);
+    let rocket;
+    loader
+        .add('image/09.png')
+        .load(setup);
+    function setup() {
+        let texture=TextureCache['image/09.png'];
+      rectangle = new PIXI.Rectangle(100,100,64,64);//Pixi内置了一个通用的Rectangle对象 (PIXI.Rectangle)，他是一个用于定义矩形形状的通用对象。
+        texture.frame=rectangle;//我们用它来定义子图像在雪碧图中的位置和大小。Pixi的纹理中有一个叫做frame的很有用的属性，它可以被设置成任何的Rectangle对象。frame将纹理映射到Rectangle的维度。下面是怎么用frame来定义火箭的大小和位置。
+         rocket=new Sprite(texture);//裁切纹理来创建精灵了：
+        rocket.x=11;
+        rocket.y=32;
+        rocket.vx=0;
+        rocket.vy=0;
+        app.stage.addChild(rocket); //将火箭渲染到 舞台
+        app.renderer.render(app.stage)//渲染舞台
+        // app.ticker.add(delta=>aaa(delta))
+    }
+    function aaa(delta) {
+        requestAnimationFrame(aaa)
+        rocket.vx=1;
+        rocket.vy=1;
+        // console.log(rocket.x)
+        rocket.x+=rocket.vx;
+        rocket.y+=rocket.vy
+
+        // console.log(delta)
+    }
+    aaa()
+</script>
+</body>
+</html>

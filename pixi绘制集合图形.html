@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="js/pixi.min.js"></script>
+</head>
+<body>
+<script>
+    let Application=PIXI.Application,
+        loader=PIXI.loader,
+        resources=loader.resources,
+        Sprite=PIXI.Sprite,
+        TextureCache=PIXI.utils.TextureCache;
+
+    let app=new Application({
+        width:300,
+        height:300,
+        antialias: true,
+        transparent:false,
+        resolution:1
+    });
+
+        document.body.appendChild(app.view);
+    //显示文本
+    let style = new PIXI.TextStyle({
+        fontFamily: "Arial",
+        fontSize: 36,
+        fill: "white",
+        stroke: '#ff3300',
+        strokeThickness: 4,
+        dropShadow: true,
+        dropShadowColor: "#000000",
+        dropShadowBlur: 4,
+        dropShadowAngle: Math.PI / 6,
+        dropShadowDistance: 6,
+    });
+    let message = new PIXI.Text("Hello Pixi!",style);
+    app.stage.addChild(message);
+    message.position.set(54, 96);
+        message.text='hello word'
+
+    //多边形
+    // let triangle = new PIXI.Graphics();
+    // triangle.beginFill(0x66FF33);
+    // triangle.drawPolygon([
+    //     -32, 64,             //First point
+    //     32, 64,              //Second point
+    //     0, 0                 //Third point
+    // ]);
+    // triangle.endFill();
+    //
+    // triangle.x = 180;
+    // triangle.y = 22;
+    //
+    // app.stage.addChild(triangle);
+
+    //线段
+    // let line = new PIXI.Graphics();
+    // line.lineStyle(4, 0xFFFFFF, 1);
+    // line.moveTo(0, 0);
+    // line.lineTo(80, 50);
+    // line.x = 32;
+    // line.y = 32;
+    // app.stage.addChild(line);
+
+    //圆角矩形
+    // let roundBox = new PIXI.Graphics();
+    // roundBox.lineStyle(4, 0x99CCFF, 1);
+    // roundBox.beginFill(0xFF9933);
+    // roundBox.drawRoundedRect(0, 0, 84, 36, 10)
+    // roundBox.endFill();
+    // roundBox.x = 48;
+    // roundBox.y = 190;
+    // app.stage.addChild(roundBox);
+    //椭圆
+    // let ellipse = new PIXI.Graphics();
+    // ellipse.beginFill(0xFFFF00);
+    // ellipse.drawEllipse(0, 0, 50, 20);
+    // ellipse.endFill();
+    // ellipse.x = 180;
+    // ellipse.y = 130;
+    // app.stage.addChild(ellipse);
+
+
+
+
+
+    //圆形
+    // let circle=new PIXI.Graphics();
+    // circle.beginFill(0X9966FF);
+    // circle.drawCircle(0, 0, 32);
+    // circle.endFill();
+    // circle.x = 64;
+    // circle.y = 130;
+    // app.stage.addChild(circle);
+
+
+
+
+
+    //矩形
+    // let rectangle=new PIXI.Graphics();
+    //     rectangle.beginFill(0x66CCFF);
+    //     rectangle.lineStyle(4,0xFF3300,1);
+    //     rectangle.drawRect(0,0,40,20)
+    //     rectangle.endFill();
+    //     rectangle.x=100;
+    //     rectangle.y=100;
+    //     app.stage.addChild(rectangle)
+
+
+</script>
+</body>
+</html>

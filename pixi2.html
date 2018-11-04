@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="./js/pixi.min.js"></script>
+</head>
+<body>
+<script>
+    let Application=PIXI.Application,
+        loader=PIXI.loader,
+        resources=loader.resources,
+        Sprite=PIXI.Sprite,
+        TextureCache=PIXI.utils.TextureCache;
+    let app=new Application({
+        width: 500,
+        height: 400,
+        antialias: true,
+        transparent:false,
+        resolution:1
+    });
+    document.body.appendChild(app.view);
+    loader
+        .add('image/cat.png')
+        .add('image/09.png')
+        .load(setup);
+        function setup() {
+            let cat = new Sprite(resources['image/cat.png'].texture);
+
+            cat.x=100;
+            cat.y=40;
+            // cat.position.set(200,200)
+            // cat.height=200; //高
+            // cat.width=100;   //宽
+            cat.anchor.x=0.5;
+            cat.anchor.y=0.5;
+            cat.rotation=0.5;
+            // cat.scale.x=3;
+            // cat.scale.y=3;
+            // cat.scale.set(0.5,0.5); //大小比例
+            app.stage.addChild(cat);
+        }
+
+    // let app=new Application({
+    //     width:300,
+    //     height:300,
+    //     antialias:true,  //字体边界几何图形 更加圆滑
+    //     transparent:false,//透明的
+    //     resolution:1
+    // });
+    // document.body.appendChild(app.view);
+    // loader
+    //     .add([
+    //         './image/1.jpg',
+    //         './image/2.jpg',
+    //         './image/3.jpg',
+    //         './image/4.jpg'
+    //     ])
+    //     .on('progress',loadProgressHandler)
+    //     .load(setup);
+    // function loadProgressHandler(loader,resourse) {
+    //     console.log('loader'+resourse.url);
+    //     console.log('progress'+loader.progress)
+    // }
+    // function setup() {
+    //     let cat=new Sprite(resources['./image/1.jpg'].texture);
+    //     app.stage.addChild(cat)
+    //
+    // }
+
+
+
+
+</script>
+
+</body>
+</html>

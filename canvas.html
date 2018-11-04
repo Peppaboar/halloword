@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>canvas</title>
+</head>
+<body>
+<canvas id="newWork" width="300px" height="300px" style="border:1px solid #ccc;"></canvas>
+</body>
+<script>
+    var c=document.querySelector('#newWork');
+    var can=c.getContext("2d");
+    //图像绘制
+    var img=new Image();
+    img.src='./image/1c43fdde2c4c7b269d95f60e388a84ad45e95e85331146-9rzrCK_fw658.jpg'
+    can.drawImage(img,50,50,100,100,10,10,200,200)
+
+
+
+
+
+    //径向渐变
+    // var col=can.createRadialGradient(100,150,0,300,200,100);
+    // col.addColorStop(0,'pink');
+    // col.addColorStop(1,'blue');
+    // can.fillStyle=col;
+    // can.beginPath();
+    // can.arc(200,200,100,0,Math.PI*2,true);
+    // can.closePath();
+    // can.fill()
+
+
+
+
+
+
+
+
+    // //线性渐变
+    // var col=can.createLinearGradient(0,0,0,200);
+    //    col.addColorStop(0,'pink');
+    //    col.addColorStop(1,'blue');
+    //    can.fillStyle=col;
+    //    can.fillRect(0,0,200,200)
+
+
+
+
+    // var n=0;
+    // var dx=150;
+    // var dy=150;
+    // var s=100;
+    // can.beginPath();
+    // can.fillStyle='pink';
+    // can.strokeStyle='blue';
+
+
+
+
+
+
+
+
+
+
+   //  can.strokeStyle='pink';
+   // // can.moveTo(1,1);
+   //  can.lineTo(1,1)
+   //  can.lineTo(100,100);
+   //  can.lineTo(100,200)
+   //  can.stroke();
+
+
+
+
+
+
+    // //圆弧
+    // can.beginPath();
+    // can.arc(100,100,50,0,Math.PI,true);
+    // can.strokeStyle='red';
+    // // can.closePath();
+    // can.stroke();
+    //
+    // // can.beginPath();
+    // can.arc(100,200,50,0,Math.PI,true);
+    // can.strokeStyle='red';
+    // can.stroke()
+
+
+
+
+
+
+    // can.fillRect(10,10,100,100) ;  //实心矩形
+    // can.strokeRect(160,10,100,100);//空心圆矩形
+    // can.fillStyle='pink';
+    // can.strokeStyle='blue';
+    // can.fillRect(160,160,100,100);//实心矩形
+    // can.strokeRect(10,160,100,100)
+    // can.clearRect(100,100,100,100) //清除矩形
+
+
+
+    // var img=new Image();
+    // img.src='./image/1c43fdde2c4c7b269d95f60e388a84ad45e95e85331146-9rzrCK_fw658.jpg'
+    //     can.drawImage(img,10,20)
+
+    //创建径向/圆渐变
+    // var grd=can.createRadialGradient(10,20,0,0,100,100);
+    // grd.addColorStop(0,'blue');//蓝色
+    // grd.addColorStop(1,'pink');//粉色
+    //
+    // // 填充渐变
+    // can.fillStyle=grd;
+    // can.fillRect(10,10,100,200) //x轴10，y轴10，宽100，高200
+
+
+
+
+    // var grd=can.createLinearGradient(0,200,200,111); //创建线性渐变
+    // grd.addColorStop(0,'green');//开始颜色
+    // grd.addColorStop(1,'white');//结束颜色
+    // can.fillStyle=grd;
+    // can.fillRect(10,30,150,80);//1,x轴，2，y轴，3，width,4,height
+
+    // can.font='30px Arial';
+    // can.fillText('hello word',10,200);// 在 canvas 上绘制实心的文本
+    // can.strokeText('cancelBabble',100,100)// 在 canvas 上绘制空心的文本
+
+
+    // 圆形
+    // can.beginPath();//开始路径
+    // can.arc(95,50,40,0,2*Math.PI);
+    // can.stroke()
+
+
+
+
+
+
+    // can.moveTo(0,0);
+    // can.lineTo(200,100);
+    // can.stroke();
+    // can.fillStyle='red';
+    // can.fillRect(10,20,100,20)
+
+</script>
+</html>
